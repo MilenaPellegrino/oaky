@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OAKY</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>OAKY - Ropa de bebes y niños</h1>
+        
+        <div class="tabs">
+            <button class="tab-button active" onclick="openTab('add-product')">Cargar Productos</button>
+            <button class="tab-button" onclick="openTab('check-price')">Consultar Precio</button>
+            <button class="tab-button" onclick="openTab('view-products')">Ver Productos</button>
+        </div>
+        
+        <div id="add-product" class="tab-content" style="display: block;">
+            <h2>Cargar Nuevo Producto</h2>
+            <form id="product-form">
+                <div class="form-group">
+                    <label for="barcode">Código de Barras:</label>
+                    <input type="text" id="barcode" required>
+                </div>
+                <div class="form-group">
+                    <label for="name">Nombre (opcional):</label>
+                    <input type="text" id="name">
+                </div>
+                <div class="form-group">
+                    <label for="price">Precio:</label>
+                    <input type="number" id="price" step="0.01" required>
+                </div>
+                <button type="submit">Guardar Producto</button>
+            </form>
+            <div id="message" class="message"></div>
+        </div>
+        
+        <div id="check-price" class="tab-content">
+            <h2>Consultar Precio</h2>
+            <div class="search-options">
+                <button onclick="showSearch('barcode')">Buscar por Código de Barras</button>
+                <button onclick="showSearch('name')">Buscar por Nombre</button>
+            </div>
+            
+            <div id="barcode-search" class="search-form">
+                <form id="barcode-form">
+                    <div class="form-group">
+                        <label for="search-barcode">Ingrese Código de Barras:</label>
+                        <input type="text" id="search-barcode" required>
+                    </div>
+                    <button type="submit">Buscar</button>
+                </form>
+            </div>
+            
+            <div id="name-search" class="search-form" style="display: none;">
+                <form id="name-form">
+                    <div class="form-group">
+                        <label for="search-name">Ingrese Nombre:</label>
+                        <input type="text" id="search-name" required>
+                    </div>
+                    <button type="submit">Buscar</button>
+                </form>
+            </div>
+            
+            <div id="search-results" class="results"></div>
+        </div>
+        <div id="view-products" class="tab-content">
+            <h2>Listado de Productos</h2>
+            <button onclick="generatePDF()">Descargar PDF</button>
+            
+        <div class="price-update-form">
+                <h3>Ajustar Precios</h3>
+                <form id="update-prices-form">
+                    <div class="form-group">
+                        <label for="percentage">Porcentaje de aumento (%):</label>
+                        <input type="number" id="percentage" step="0.01" min="0" required>
+                    </div>
+                    <button type="submit">Aplicar Aumento</button>
+                </form>
+                <div id="update-message" class="message"></div>
+            </div>
+            
+            <div id="products-list" class="products-list"></div>
+        </div>
+
+        <div id="view-products" class="tab-content">
+            <h2>Listado de Productos</h2>
+            <button onclick="generatePDF()">Descargar PDF</button>
+            <div id="products-list" class="products-list"></div>
+        </div>
+    </div>
+
+    <script src="jspdf.umd.min.js"></script>
+    <script src="autotable.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
