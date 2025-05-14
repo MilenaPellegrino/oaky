@@ -33,6 +33,12 @@
                 </div>
                 <button type="submit">Guardar Producto</button>
             </form>
+            <hr>
+            <h3>Importar desde CSV</h3>
+            <input type="file" id="csv-file" accept=".csv">
+            <button onclick="importCSV()">Importar Productos</button>
+            <div id="import-message" class="message"></div>
+
             <div id="message" class="message"></div>
         </div>
 
@@ -83,6 +89,8 @@
             </div>
 
             <div id="products-list" class="products-list"></div>
+            <div id="all-products" class="tab-content"></div>
+
         </div>
     </div>
 

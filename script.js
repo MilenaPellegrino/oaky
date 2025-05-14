@@ -131,24 +131,31 @@ function loadProducts() {
 }
 
 // Mostrar todos
-function displayAllProducts() {
-    const div = document.getElementById('products-list');
-    div.innerHTML = '';
-    if (products.length === 0) {
-        div.innerHTML = '<p>No hay productos cargados.</p>';
+function displayResults(product) {
+    const div = document.getElementById('search-results');
+    if (!product) {
+        div.innerHTML = '<p>No se encontró el producto</p>';
         return;
     }
-
-    for (let p of products) {
-        const card = document.createElement('div');
-        card.className = 'product-card';
-        card.innerHTML = `
-            <h3>${p.name}</h3>
-            <p><strong>Código:</strong> ${p.barcode}</p>
-            <p><strong>Precio:</strong> $${p.price.toFixed(2)}</p>`;
-        div.appendChild(card);
-    }
+    div.innerHTML = `
+        <div class="product-item">
+            <p><strong>Código:</strong> ${product.barcode}</p>
+            <p><strong>Nombre:</strong> ${product.name}</p>
+            <p><strong>Precio:</strong> $${product.price.toFixed(2)}</p>
+            <button onclick="deleteProduct('${product.barcode}')">Eliminar</button>
+        </div>
+    `;
 }
+
+function deleteProduct(barcode) {
+    const confirmDelete = confirm("¿Estás seguro de que querés eliminar este producto?");
+    if (!confirmDelete) return;
+
+    products = products.filter(p => p.barcode !== barcode);
+    saveProducts();
+    document.getElementById('search-results').innerHTML = '<p>Producto eliminado correctamente.</p>';
+}
+
 
 // Ajustar precios
 function updatePrices(e) {
@@ -189,4 +196,74 @@ function generatePDF() {
     });
 
     doc.save('productos.pdf');
+}
+function importCSV() {
+    const fileInput = document.getElementById('csv-file');
+    const file = fileInput.files[0];
+    const importMsg = document.getElementById('import-message');
+
+    if (!file) {
+        importMsg.textContent = 'Seleccioná un archivo CSV';
+        importMsg.className = 'message error';
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const lines = e.target.result.split('\n');
+        let count = 0;
+        for (let i = 1; i < lines.length; i++) {
+            const line = lines[i].trim();
+            if (!line) continue;
+
+            const [barcode, name, price] = line.split(',');
+
+            // Verifica que el código no exista
+            if (products.some(p => p.barcode === barcode)) continue;
+
+            const parsedPrice = parseFloat(price);
+            if (!barcode || isNaN(parsedPrice)) continue;
+
+            products.push({
+                barcode: barcode.trim(),
+                name: (name || 'Sin nombre').trim(),
+                price: parsedPrice
+            });
+            count++;
+        }
+
+        saveProducts();
+        fileInput.value = '';
+        importMsg.textContent = `Se importaron ${count} productos correctamente.`;
+        importMsg.className = 'message success';
+    };
+
+    reader.onerror = () => {
+        importMsg.textContent = 'Error al leer el archivo.';
+        importMsg.className = 'message error';
+    };
+
+    reader.readAsText(file);
+}
+function displayAllProducts() {
+    const container = document.getElementById('all-products');
+    if (!container) return;
+
+    if (products.length === 0) {
+        container.innerHTML = '<p>No hay productos para mostrar.</p>';
+        return;
+    }
+
+    let html = '';
+    for (let p of products) {
+        html += `
+            <div class="product-item">
+                <p><strong>Código:</strong> ${p.barcode}</p>
+                <p><strong>Nombre:</strong> ${p.name}</p>
+                <p><strong>Precio:</strong> $${p.price.toFixed(2)}</p>
+            </div>
+        `;
+    }
+
+    container.innerHTML = html;
 }
