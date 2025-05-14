@@ -1,6 +1,7 @@
+
 let products = JSON.parse(localStorage.getItem('products')) || [];
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     loadProducts();
 
     document.getElementById('product-form').addEventListener('submit', addProduct);
@@ -80,6 +81,7 @@ function displayResults(product) {
             <p><strong>Código:</strong> ${product.barcode}</p>
             <p><strong>Nombre:</strong> ${product.name}</p>
             <p><strong>Precio:</strong> $${product.price.toFixed(2)}</p>
+            <button onclick="deleteProduct('${product.barcode}')">Eliminar</button>
         </div>
     `;
 }
@@ -130,23 +132,7 @@ function loadProducts() {
     products = JSON.parse(localStorage.getItem('products')) || [];
 }
 
-// Mostrar todos
-function displayResults(product) {
-    const div = document.getElementById('search-results');
-    if (!product) {
-        div.innerHTML = '<p>No se encontró el producto</p>';
-        return;
-    }
-    div.innerHTML = `
-        <div class="product-item">
-            <p><strong>Código:</strong> ${product.barcode}</p>
-            <p><strong>Nombre:</strong> ${product.name}</p>
-            <p><strong>Precio:</strong> $${product.price.toFixed(2)}</p>
-            <button onclick="deleteProduct('${product.barcode}')">Eliminar</button>
-        </div>
-    `;
-}
-
+// Eliminar producto
 function deleteProduct(barcode) {
     const confirmDelete = confirm("¿Estás seguro de que querés eliminar este producto?");
     if (!confirmDelete) return;
@@ -155,7 +141,6 @@ function deleteProduct(barcode) {
     saveProducts();
     document.getElementById('search-results').innerHTML = '<p>Producto eliminado correctamente.</p>';
 }
-
 
 // Ajustar precios
 function updatePrices(e) {
@@ -170,7 +155,7 @@ function updatePrices(e) {
 
     saveProducts();
     displayAllProducts();
-    showUpdateMessage(`Precios aumentados un ${percent}%`, 'success');
+    showUpdateMessage(`Precios aumentados un ${percent}%.`, 'success');
 }
 
 // PDF
@@ -197,6 +182,8 @@ function generatePDF() {
 
     doc.save('productos.pdf');
 }
+
+// Importar CSV
 function importCSV() {
     const fileInput = document.getElementById('csv-file');
     const file = fileInput.files[0];
@@ -209,7 +196,7 @@ function importCSV() {
     }
 
     const reader = new FileReader();
-    reader.onload = function(e) {
+    reader.onload = function (e) {
         const lines = e.target.result.split('\n');
         let count = 0;
         for (let i = 1; i < lines.length; i++) {
@@ -218,7 +205,6 @@ function importCSV() {
 
             const [barcode, name, price] = line.split(',');
 
-            // Verifica que el código no exista
             if (products.some(p => p.barcode === barcode)) continue;
 
             const parsedPrice = parseFloat(price);
@@ -245,6 +231,8 @@ function importCSV() {
 
     reader.readAsText(file);
 }
+
+// Mostrar todos
 function displayAllProducts() {
     const container = document.getElementById('all-products');
     if (!container) return;
@@ -267,3 +255,4 @@ function displayAllProducts() {
 
     container.innerHTML = html;
 }
+
