@@ -81,9 +81,38 @@ function displayResults(product) {
             <p><strong>Código:</strong> ${product.barcode}</p>
             <p><strong>Nombre:</strong> ${product.name}</p>
             <p><strong>Precio:</strong> $${product.price.toFixed(2)}</p>
+            <button onclick="editProduct('${product.barcode}')">Editar Precio</button>
             <button onclick="deleteProduct('${product.barcode}')">Eliminar</button>
         </div>
     `;
+}
+
+// Editar producto
+function editProduct(barcode) {
+    const product = products.find(p => p.barcode === barcode);
+    if (!product) return;
+
+    const newPrice = prompt("Ingrese el nuevo precio para " + product.name + ":", product.price.toFixed(2));
+    if (newPrice === null) return; // Si el usuario cancela
+    
+    const parsedPrice = parseFloat(newPrice);
+    if (isNaN(parsedPrice)) {
+        alert("Por favor ingrese un precio válido");
+        return;
+    }
+
+    product.price = parsedPrice;
+    saveProducts();
+    
+    // Actualizar la visualización
+    const currentTab = document.querySelector('.tab-button.active').getAttribute('onclick').match(/'([^']+)'/)[1];
+    if (currentTab === 'view-products') {
+        displayAllProducts();
+    } else {
+        displayResults(product);
+    }
+    
+    showMessage('Precio actualizado correctamente', 'success');
 }
 
 // Mostrar varios resultados
@@ -249,10 +278,11 @@ function displayAllProducts() {
                 <p><strong>Código:</strong> ${p.barcode}</p>
                 <p><strong>Nombre:</strong> ${p.name}</p>
                 <p><strong>Precio:</strong> $${p.price.toFixed(2)}</p>
+                <button onclick="editProduct('${p.barcode}')">Editar Precio</button>
+                <button onclick="deleteProduct('${p.barcode}')">Eliminar</button>
             </div>
         `;
     }
-
     container.innerHTML = html;
 }
 
