@@ -31,6 +31,10 @@
                     <label for="price">Precio:</label>
                     <input type="number" id="price" step="0.01" required>
                 </div>
+                <div class="form-group">
+                    <label for="stock">Stock:</label>
+                    <input type="number" id="stock" min="0" required>
+                </div>
                 <button type="submit">Guardar Producto</button>
             </form>
             <hr>
@@ -75,6 +79,7 @@
         <div id="view-products" class="tab-content" style="display: none;">
             <h2>Listado de Productos</h2>
             <button onclick="generatePDF()">Descargar PDF</button>
+            <button onclick="generateExcel()">Descargar Excel</button>
 
             <div class="price-update-form">
                 <h3>Ajustar Precios</h3>
@@ -97,5 +102,7 @@
     <script src="jspdf.umd.min.js"></script>
     <script src="autotable.min.js"></script>
     <script src="script.js"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+
 </body>
 </html>
