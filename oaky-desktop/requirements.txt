@@ -1,0 +1,2 @@
+# No se necesitan dependencias externas
+# Tkinter viene incluido con Python
